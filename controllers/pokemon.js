@@ -32,9 +32,20 @@ async function pokemonShow(req, res) {
   }
 }
 
+async function pokemonDelete(req, res) {
+  try {
+    const id = req.params.id
+    await Pokemon.findByIdAndDelete(id)
+    return res.sendStatus(204)
+  } catch (err) {
+    console.error('Error deleting Pokemon: ', err.message)
+    return res.sendStatus(500)
+  }
+}
 
 export default {
   create: pokemonCreate,
   index: pokemonIndex,
-  show: pokemonShow
+  show: pokemonShow,
+  delete: pokemonDelete
 }
