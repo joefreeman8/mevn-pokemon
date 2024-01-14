@@ -12,5 +12,6 @@ router.route('/pokemon')
 router.route('/pokemon/:id')
   .get(pokemon.show)
   .delete(pokemon.delete)
+  .put(pokemon.update)
 
 export default router

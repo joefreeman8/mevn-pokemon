@@ -43,9 +43,23 @@ async function pokemonDelete(req, res) {
   }
 }
 
+async function pokemonUpdate(req, res) {
+  try {
+    const id = req.params.id
+    const pokemonToUpdate = await Pokemon.findByIdAndUpdate(id, { ...req.body }, { new: true })
+    console.log(pokemonToUpdate)
+    await pokemonToUpdate.save()
+    return res.status(202).json(pokemonToUpdate)
+  } catch (err) {
+    console.error('Error updating Pokemon: ', err)
+    return res.sendStatus(500)
+  }
+}
+
 export default {
   create: pokemonCreate,
   index: pokemonIndex,
   show: pokemonShow,
-  delete: pokemonDelete
+  delete: pokemonDelete,
+  update: pokemonUpdate
 }
