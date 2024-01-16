@@ -8,7 +8,7 @@ const pokemonSchema = new mongoose.Schema({
   habitat: { type: String, required: true },
   sprite: { type: String, required: true },
   image: { type: String, required: true },
-  // addedBy: { type: mongoose.Schema.ObjectId, ref: 'User', required: true }
+  addedBy: { type: mongoose.Schema.ObjectId, ref: 'User', required: true }
 })
 
 const Pokemon = mongoose.model('Pokemon', pokemonSchema)
