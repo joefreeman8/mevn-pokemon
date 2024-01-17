@@ -1,8 +1,11 @@
 import Pokemon from "../models/pokemon.js";
+import User from "../models/user.js";
 
 async function pokemonCreate(req, res) {
   try {
-    const createPokemon = await Pokemon.create({ ...req.body })
+    const { userEmail } = req.body
+    const findUser = await User.findOne({ "userEmail": userEmail })
+    const createPokemon = await Pokemon.create({ ...req.body, addedBy: findUser._id })
     console.log(createPokemon)
     return res.status(201).json(createPokemon)
   } catch (err) {
@@ -24,7 +27,7 @@ async function pokemonIndex(req, res) {
 async function pokemonShow(req, res) {
   try {
     const id = req.params.id
-    const singlePokemon = await Pokemon.findById(id)
+    const singlePokemon = await Pokemon.findById(id).populate('addedBy')
     return res.status(200).json(singlePokemon)
   } catch (err) {
     console.error('Error finding single Pokemon: ', err, err.message)
@@ -46,10 +49,18 @@ async function pokemonDelete(req, res) {
 async function pokemonUpdate(req, res) {
   try {
     const id = req.params.id
-    const pokemonToUpdate = await Pokemon.findByIdAndUpdate(id, { ...req.body }, { new: true })
-    console.log(pokemonToUpdate)
-    await pokemonToUpdate.save()
-    return res.status(202).json(pokemonToUpdate)
+    const userEmail = req.headers['user-email']
+    const findUser = await User.findOne({ "userEmail": userEmail })
+    const findPokemon = await Pokemon.findById(id)
+
+    if (findUser._id.equals(findPokemon.addedBy)) {
+      const pokemonToUpdate = await Pokemon.findByIdAndUpdate(id, { ...req.body }, { new: true })
+      await pokemonToUpdate.save()
+      return res.status(202).json(pokemonToUpdate)
+    } else {
+      console.log('Invalid user or Pokemon not found');
+      return res.sendStatus(401)
+    }
   } catch (err) {
     console.error('Error updating Pokemon: ', err)
     return res.sendStatus(500)

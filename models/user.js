@@ -2,6 +2,7 @@ import mongoose from "mongoose"
 
 const userSchema = new mongoose.Schema({
   userEmail: { type: String, required: true },
+  uniqueSub: { type: String, required: true },
   lastLogin: { type: Date, required: true }
 })
 

@@ -6,6 +6,7 @@ async function createUser(req, res) {
     if (await User.countDocuments({ "userEmail": req.body.userEmail }) === 0) {
       const newUser = new User({
         userEmail: req.body.userEmail,
+        uniqueSub: req.body.uniqueSub,
         lastLogin: now
       })
       await newUser.save()
@@ -13,6 +14,7 @@ async function createUser(req, res) {
     } else {
       const user = await User.findOneAndUpdate(
         { "userEmail": req.body.userEmail },
+        { "uniqueSub": req.body.uniqueSub },
         { lastLogin: now }
       )
       res.status(200).json(user)
