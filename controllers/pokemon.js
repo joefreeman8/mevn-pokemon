@@ -3,7 +3,7 @@ import User from "../models/user.js";
 
 async function pokemonCreate(req, res) {
   try {
-    const { userEmail } = req.body
+    const userEmail = req.headers['user-email']
     const findUser = await User.findOne({ "userEmail": userEmail })
     const createPokemon = await Pokemon.create({ ...req.body, addedBy: findUser._id })
     console.log(createPokemon)
@@ -38,8 +38,18 @@ async function pokemonShow(req, res) {
 async function pokemonDelete(req, res) {
   try {
     const id = req.params.id
-    await Pokemon.findByIdAndDelete(id)
-    return res.sendStatus(204)
+    const userEmail = req.headers["user-email"]
+    const findUser = await User.findOne({ "userEmail": userEmail })
+    const findPokemon = await Pokemon.findById(id)
+
+    if (findUser._id.equals(findPokemon.addedBy)) {
+      console.log('sucessfully deleting')
+      await Pokemon.findByIdAndDelete(id)
+      return res.sendStatus(204)
+    } else {
+      console.log('Invalid user or Pokemon not found');
+      return res.sendStatus(401)
+    }
   } catch (err) {
     console.error('Error deleting Pokemon: ', err.message)
     return res.sendStatus(500)
