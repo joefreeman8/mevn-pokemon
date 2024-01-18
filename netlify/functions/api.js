@@ -16,12 +16,10 @@ api.use('/', logger)
 api.use('/api', router)
 
 
-// const port = process.env.PORT || 4000
 
 function startServer() {
   try {
     connectDB()
-    // api.listen(port, () => console.log(`🤖🚀 Express is listening on port: ${port}`))
   } catch (err) {
     console.log('❌❌ Error: ', err, err.message)
   }
