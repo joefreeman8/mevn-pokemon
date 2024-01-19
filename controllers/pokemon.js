@@ -17,7 +17,8 @@ async function pokemonCreate(req, res) {
 async function pokemonIndex(req, res) {
   try {
     const allPokemon = await Pokemon.find({})
-    return res.status(200).json(allPokemon)
+    const sortPokemon = allPokemon.sort((a, b) => a.number - b.number)
+    return res.status(200).json(sortPokemon)
   } catch (err) {
     console.error('Error finding Pokemon: ', err, err.message)
     return res.sendStatus(500)
